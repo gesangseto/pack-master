@@ -1,0 +1,23 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability for the main window",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "opener:default",
+    "sql:default",
+    "sql:allow-load",
+    "sql:allow-execute",
+    "sql:allow-select",
+    "sql:allow-close",
+    "serialplugin:default",
+    "serialplugin:allow-available-ports",
+    "serialplugin:allow-open",
+    "serialplugin:allow-read",
+    "serialplugin:allow-write",
+    "serialplugin:allow-start-listening",
+    "serialplugin:allow-write-data-terminal-ready",
+    "serialplugin:allow-write-request-to-send"
+  ]
+}
