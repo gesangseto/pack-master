@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import MainScreen from './MainScreen';
 import database from './configuration/database';
-
+import './App.css';
 function App() {
   const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);

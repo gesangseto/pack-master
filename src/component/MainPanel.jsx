@@ -1,16 +1,9 @@
-import { useEffect, useState } from 'react';
-import reactLogo from './assets/react.svg';
 import { invoke } from '@tauri-apps/api/core';
+import { useEffect, useState } from 'react';
 import { SerialPort } from 'tauri-plugin-serialplugin-api';
-import ProductStockSerial from './models/ProductStockSerial';
+import ProductStockSerial from '../models/ProductStockSerial';
 
-import './css/MainScreen.css';
-import Header from './component/Header';
-import MainPanel from './component/MainPanel';
-import Footer from './component/Footer';
-import MenuPanel from './component/MenuPanel';
-
-function App() {
+function MainPanel() {
   const [greetMsg, setGreetMsg] = useState('');
   const [barcode, setBarcode] = useState('');
   const [allBarcode, setAllBarcode] = useState([]);
@@ -23,6 +16,7 @@ function App() {
 
   useEffect(() => {
     connectScanner();
+    loadDataBarcode();
   }, []);
 
   useEffect(() => {
@@ -77,16 +71,79 @@ function App() {
   };
 
   return (
-    <main className="wrapper">
-      {/* LEFT */}
-      <div className="left">
-        <Header />
-        <MainPanel />
-        <Footer />
-      </div>
-      <MenuPanel />
+    <main className="main-panel">
+      {/* RIGHT MENU */}
+      <input
+        id="greet-input"
+        value={barcode}
+        onChange={(e) => setBarcode(e.currentTarget.value)}
+        placeholder="Enter a barcode..."
+      />
+      <button
+        type="submit"
+        onClick={() => {
+          handleSubmit();
+        }}
+      >
+        Save to Database
+      </button>
+      {allBarcode.map((bc) => (
+        <div key={bc.id}>
+          <br />
+          <button onClick={() => handleDelete(bc.id)}>delete</button>&nbsp;
+          {bc.barcode}
+        </div>
+      ))}
     </main>
   );
 }
 
-export default App;
+export default MainPanel;
+const styles = {
+  wrapper: {
+    display: 'flex',
+    height: '100vh',
+  },
+
+  // KIRI (HEADER + CONTENT + FOOTER)
+  left: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+  },
+
+  header: {
+    height: 60,
+    background: '#1e293b',
+    color: 'white',
+    display: 'flex',
+    alignItems: 'center',
+    padding: '0 20px',
+  },
+
+  center: {
+    flex: 1,
+    background: '#f1f5f9',
+    padding: 20,
+  },
+
+  footer: {
+    height: 40,
+    background: '#1e293b',
+    color: 'white',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  // KANAN (FULL HEIGHT)
+  rightMenu: {
+    width: 200,
+    background: '#334155',
+    color: 'white',
+    display: 'flex',
+    flexDirection: 'column',
+    padding: 10,
+    gap: 10,
+  },
+};

@@ -1,3 +1,6 @@
+Development: npm run tauri dev
+Build to exe: npm run tauri build
+
 # Tauri + React
 
 This template should help get you started developing with Tauri and React in Vite.

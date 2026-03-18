@@ -14,7 +14,10 @@
       {
         "title": "packmaster",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "resizable": true,
+        "maximized": true,
+        "decorations": false
       }
     ],
     "security": {

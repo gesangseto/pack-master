@@ -1,9 +1,20 @@
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
+::-webkit-scrollbar {
+  display: none;
+}
+.no-horizontal-scrollbar {
+  /* Keeps the horizontal scrollbar hidden */
+  overflow-x: hidden;
 }
 
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafb);
+.no-vertical-scrollbar {
+  /* Keeps the vertical scrollbar hidden */
+  overflow-y: hidden;
+}
+
+.no-scrollbars {
+  /* Keeps both the horizontal and vertical 
+     scrollbars hidden */
+  overflow: hidden;
 }
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
@@ -23,7 +34,7 @@
 
 .container {
   margin: 0;
-  padding-top: 10vh;
+  /* padding-top: 10vh; */
   display: flex;
   flex-direction: column;
   justify-content: center;
