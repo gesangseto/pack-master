@@ -2,7 +2,7 @@
   height: 120px;
   display: flex;
   align-items: center;
-  padding: 0 0px;
+  margin: 15;
   box-sizing: border-box; /* Tambahkan ini */
   background: #e4e4e4;
   width: 100%; /* Pastikan lebarnya 100% */
@@ -24,7 +24,6 @@
 .header-item-right {
   flex: 1;
   display: flex;
-  align-items: right;
   justify-content: right;
 }
 

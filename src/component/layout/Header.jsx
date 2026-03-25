@@ -1,14 +1,25 @@
 import LoginIcon from '@mui/icons-material/Login';
-import { Box, Button, keyframes } from '@mui/material';
-import mertrackLogo from '../assets/mertrack.png';
-import '../css/Header.css';
+import LogoutIcon from '@mui/icons-material/LogoutOutlined';
+import { Box, Button, keyframes, Tooltip } from '@mui/material';
+import mertrackLogo from '../../assets/mertrack.png';
+import '../../css/layout/Header.css';
+import FormLogin from '../FormLogin';
 import { Circle } from '@mui/icons-material';
+import { useState } from 'react';
+import { useAuthStore } from '../../store/authStore';
+import { useConfirm } from '../ConfirmProvider';
+
 const blink = keyframes`
   0% { background-color: #e00202; }
   50% { background-color: #a30505; }
   100% { background-color: #e00202; }
 `;
 function Header() {
+  const [open, setOpen] = useState(false);
+  const confirm = useConfirm();
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
+
   return (
     <div className="header">
       <div className="header-item-left">
@@ -82,17 +93,50 @@ function Header() {
             fontSize: '1.2rem',
           }}
         >
-          <span>
-            Gesang Aji Seto
-            <br />
-            Super Admin
-          </span>
+          {user ? (
+            <span>
+              {user?.username}
+              <br />
+              {user?.department_name} - {user?.section_name}
+            </span>
+          ) : null}
         </Box>
       </div>
       <div className="header-item-right">
-        <Button color="primary">
-          <LoginIcon fontSize="large"></LoginIcon>
-        </Button>
+        {user ? (
+          <Tooltip title="Logout">
+            <Button
+              variant="contained"
+              color="error"
+              onClick={async () => {
+                const ok = await confirm('Yakin ingin logout?');
+                console.log(ok);
+
+                if (ok) {
+                  logout();
+                }
+              }}
+            >
+              <LogoutIcon fontSize="large" />
+            </Button>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Login">
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => setOpen(true)}
+            >
+              <LoginIcon fontSize="large" />
+            </Button>
+          </Tooltip>
+        )}
+
+        <FormLogin
+          open={open}
+          onClose={() => setOpen(false)}
+          onLogin={() => setOpen(false)}
+        />
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import '../css/MenuPanel.css';
+import '../../css/layout/MenuPanel.css';
 
 export default function MenuPanel() {
   const [date, setDate] = useState('');

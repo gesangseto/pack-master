@@ -1,7 +1,9 @@
 import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
 import { SerialPort } from 'tauri-plugin-serialplugin-api';
-import ProductStockSerial from '../models/ProductStockSerial';
+import ProductStockSerial from '../../models/ProductStockSerial';
+import Panel from '../Panel';
+import { Grid } from '@mui/material';
 
 function MainPanel() {
   const [greetMsg, setGreetMsg] = useState('');
@@ -71,79 +73,15 @@ function MainPanel() {
   };
 
   return (
-    <main className="main-panel">
-      {/* RIGHT MENU */}
-      <input
-        id="greet-input"
-        value={barcode}
-        onChange={(e) => setBarcode(e.currentTarget.value)}
-        placeholder="Enter a barcode..."
-      />
-      <button
-        type="submit"
-        onClick={() => {
-          handleSubmit();
-        }}
-      >
-        Save to Database
-      </button>
-      {allBarcode.map((bc) => (
-        <div key={bc.id}>
-          <br />
-          <button onClick={() => handleDelete(bc.id)}>delete</button>&nbsp;
-          {bc.barcode}
-        </div>
-      ))}
-    </main>
+    <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+      <Grid size={6}>
+        <Panel title="Panel A" />
+      </Grid>
+      <Grid size={6}>
+        <Panel title="Panel B" />
+      </Grid>
+    </Grid>
   );
 }
 
 export default MainPanel;
-const styles = {
-  wrapper: {
-    display: 'flex',
-    height: '100vh',
-  },
-
-  // KIRI (HEADER + CONTENT + FOOTER)
-  left: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-
-  header: {
-    height: 60,
-    background: '#1e293b',
-    color: 'white',
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0 20px',
-  },
-
-  center: {
-    flex: 1,
-    background: '#f1f5f9',
-    padding: 20,
-  },
-
-  footer: {
-    height: 40,
-    background: '#1e293b',
-    color: 'white',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  // KANAN (FULL HEIGHT)
-  rightMenu: {
-    width: 200,
-    background: '#334155',
-    color: 'white',
-    display: 'flex',
-    flexDirection: 'column',
-    padding: 10,
-    gap: 10,
-  },
-};
