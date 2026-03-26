@@ -9,6 +9,7 @@ import Header from './component/layout/Header';
 import MainPanel from './component/layout/MainPanel';
 import Footer from './component/layout/Footer';
 import MenuPanel from './component/layout/MenuPanel';
+import InfoPanel from './component/layout/InfoPanel';
 
 function App() {
   const [greetMsg, setGreetMsg] = useState('');
@@ -81,6 +82,7 @@ function App() {
       {/* LEFT */}
       <div className="left">
         <Header />
+        <InfoPanel />
         <MainPanel />
         <Footer />
       </div>

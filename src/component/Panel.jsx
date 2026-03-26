@@ -13,7 +13,7 @@ import {
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-
+import EditSquareIcon from '@mui/icons-material/EditSquare';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
   ...theme.typography.body2,
@@ -28,7 +28,7 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Panel(props) {
   const { title } = props;
   return (
-    <Paper sx={{ p: 2 }} bgcolor="#e6e6e6" minHeight="100vh">
+    <Paper sx={{ p: 0 }} minHeight="100vh">
       {/* TOP PANEL */}
       <Box display="flex" gap={1}>
         {/* TOP LEFT PANEL */}
@@ -87,11 +87,11 @@ export default function Panel(props) {
         </Box>
       </Box>
 
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1 }} p={0.5}>
         <Grid container spacing={1}>
           {/* LEFT PANEL */}
           <Grid size={8}>
-            <Box p={2}>
+            <Box p={1}>
               <Grid container spacing={1}>
                 <Grid
                   size={2}
@@ -108,7 +108,7 @@ export default function Panel(props) {
                 <Grid
                   size={8}
                   sx={{
-                    borderRadius: 3,
+                    borderRadius: 2,
                     bgcolor: 'red',
                     display: 'flex',
                     alignItems: 'center',
@@ -121,21 +121,29 @@ export default function Panel(props) {
                   </Typography>
                 </Grid>
                 <Grid size={2}>
-                  <Stack spacing={2} alignItems="center">
+                  <Stack spacing={1} alignItems="center">
                     <Button>
-                      <AddIcon />
+                      <AddIcon fontSize="small" />
                     </Button>
                     <Button>
-                      <RemoveIcon />
+                      <RemoveIcon fontSize="small" />
                     </Button>
                   </Stack>
                 </Grid>
               </Grid>
             </Box>
             <Box>
-              <Typography variant="h6" mb={1}>
-                DAFTAR EPC ISI ()
-              </Typography>
+              <Box
+                sx={{
+                  borderRadius: 1,
+                  bgcolor: 'grey',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  color: 'error.contrastText',
+                }}
+              >
+                <Typography variant="h6">DAFTAR EPC ISI ()</Typography>
+              </Box>
               <Box
                 height={300}
                 border="1px solid #ccc"
@@ -171,24 +179,47 @@ export default function Panel(props) {
 
             <Box p={1} border="1px solid #ccc" borderRadius={2}>
               {/* Kriteria */}
-              <Typography>Kriteria Bobot</Typography>
-              <Typography>Average 0 | 0/0</Typography>
-
-              {/* Range */}
-              <Typography mt={2}>Rentang Bobot (kg)</Typography>
-              <Box display="flex" gap={1} alignItems="center" mt={1}>
-                <TextField size="small" label="Min" fullWidth />
-                <Typography>~</Typography>
-                <TextField size="small" label="Max" fullWidth />
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Typography variant="h6">Kriteria Bobot</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Typography
+                  variant="h6"
+                  sx={{ bgcolor: 'grey', px: 1, color: 'white' }}
+                >
+                  Average 5 MB
+                </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{ ml: 1, bgcolor: 'grey', px: 1, color: 'white' }}
+                >
+                  0/0
+                </Typography>
               </Box>
 
+              {/* Range */}
+              <Box sx={{ mt: 1, p: 1, borderRadius: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <Typography variant="h6">Rentang Bobot (kg)</Typography>
+                  <Button sx={{ ml: 1 }}>
+                    <EditSquareIcon sx={{ color: '#1df124' }} />
+                  </Button>
+                </Box>
+                <Box display="flex" gap={1} alignItems="center" mt={1}>
+                  <TextField size="small" label="Min." fullWidth />
+                  <Typography>~</Typography>
+                  <TextField size="small" label="Max." fullWidth />
+                </Box>
+              </Box>
               {/* Timbang */}
-              <Button fullWidth variant="contained" sx={{ mt: 2 }} disabled>
+              <Button fullWidth variant="contained" sx={{ my: 2 }}>
                 Timbang
               </Button>
 
               {/* Result */}
-              <Typography mt={2}>Hasil Timbang ()</Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Typography>Hasil Timbang (kg)</Typography>
+              </Box>
               <Box
                 bgcolor="#eee"
                 textAlign="center"

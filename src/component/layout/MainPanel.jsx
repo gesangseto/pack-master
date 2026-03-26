@@ -73,7 +73,7 @@ function MainPanel() {
   };
 
   return (
-    <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+    <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
       <Grid size={6}>
         <Panel title="Panel A" />
       </Grid>
