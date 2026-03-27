@@ -75,10 +75,10 @@ function MainPanel() {
   return (
     <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
       <Grid size={6}>
-        <Panel title="Panel A" />
+        <Panel title="Panel A" scannerPort={24} />
       </Grid>
       <Grid size={6}>
-        <Panel title="Panel B" />
+        <Panel title="Panel B" scannerPort={26} />
       </Grid>
     </Grid>
   );

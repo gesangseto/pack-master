@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { styled } from '@mui/material/styles';
 
 import {
@@ -9,11 +9,16 @@ import {
   Paper,
   Button,
   TextField,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import EditSquareIcon from '@mui/icons-material/EditSquare';
+import { invoke } from '@tauri-apps/api/core';
+import { SerialPort } from 'tauri-plugin-serialplugin-api';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
   ...theme.typography.body2,
@@ -26,7 +31,42 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Panel(props) {
-  const { title } = props;
+  const { title, scannerPort } = props;
+  const [listBarcode, setListBarcode] = useState([]);
+  const isConnected = useRef(false);
+
+  useEffect(() => {
+    if (isConnected.current) return;
+    isConnected.current = true;
+    connectScanner();
+  }, []);
+  const connectScanner = async () => {
+    try {
+      const port = new SerialPort({
+        path: `COM${scannerPort}`,
+        baudRate: 9600,
+      });
+      await port.open();
+      // Sesuaikan 'path' dengan COM port scanner Anda (misal: "COM3")
+      await invoke('plugin:serialplugin|write_data_terminal_ready', {
+        path: `COM${scannerPort}`,
+        level: true, // Ganti 'value' menjadi 'level'
+      });
+      // Zebra biasanya juga butuh RTS (Request To Send) agar stabil
+      await invoke('plugin:serialplugin|write_request_to_send', {
+        path: `COM${scannerPort}`,
+        level: true,
+      });
+      await port.startListening();
+      await port.listen((event) => {
+        setListBarcode((prev) => [...prev, event]);
+        console.log(`Data Barcode PORT ${scannerPort}: `, event);
+      });
+    } catch (err) {
+      console.error('Koneksi gagal:', err);
+    }
+  };
+
   return (
     <Paper sx={{ p: 0 }} minHeight="100vh">
       {/* TOP PANEL */}
@@ -142,14 +182,23 @@ export default function Panel(props) {
                   color: 'error.contrastText',
                 }}
               >
-                <Typography variant="h6">DAFTAR EPC ISI ()</Typography>
+                <Typography variant="h6">DAFTAR EPC ISI (Dus)</Typography>
               </Box>
               <Box
-                height={300}
+                height={280}
                 border="1px solid #ccc"
                 borderRadius={2}
                 bgcolor="#fafafa"
-              />
+                overflow="auto" // 🔥 penting biar bisa scroll
+              >
+                <List dense>
+                  {listBarcode.map((item, index) => (
+                    <ListItem key={index} divider>
+                      <ListItemText primary={item} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
               <Box display="flex" justifyContent="space-between" mt={2}>
                 <Button variant="contained" color="error">
                   Close Partial
@@ -161,7 +210,7 @@ export default function Panel(props) {
           </Grid>
 
           {/* RIGHT PANEL */}
-          <Grid size={4} pt={2}>
+          <Grid size={4} pt={0}>
             {/* Progress */}
             <Typography textAlign="center" mb={1}>
               Progres berjalan
@@ -169,11 +218,11 @@ export default function Panel(props) {
 
             <Box display="flex" justifyContent="center" gap={2} mb={2}>
               <Box bgcolor="#cfe2f3" px={3} py={1}>
-                <Typography variant="h5">0</Typography>
+                <Typography variant="h5">{listBarcode.length}</Typography>
               </Box>
               <Typography variant="h5">/</Typography>
               <Box bgcolor="#cfe2f3" px={3} py={1}>
-                <Typography variant="h5">0</Typography>
+                <Typography variant="h5">6</Typography>
               </Box>
             </Box>
 
