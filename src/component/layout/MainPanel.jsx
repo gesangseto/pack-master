@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { SerialPort } from 'tauri-plugin-serialplugin-api';
 import ProductStockSerial from '../../models/ProductStockSerial';
 import Panel from '../Panel';
-import { Grid } from '@mui/material';
+import { Grid, Paper } from '@mui/material';
 
 function MainPanel() {
   const [greetMsg, setGreetMsg] = useState('');
@@ -73,14 +73,16 @@ function MainPanel() {
   };
 
   return (
-    <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-      <Grid size={6}>
-        <Panel title="Panel A" scannerPort={24} />
+    <Paper sx={{ borderRadius: 2, my: 0.5 }}>
+      <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+        <Grid size={6}>
+          <Panel title="Panel A" scannerPort={24} />
+        </Grid>
+        <Grid size={6}>
+          <Panel title="Panel B" scannerPort={26} />
+        </Grid>
       </Grid>
-      <Grid size={6}>
-        <Panel title="Panel B" scannerPort={26} />
-      </Grid>
-    </Grid>
+    </Paper>
   );
 }
 

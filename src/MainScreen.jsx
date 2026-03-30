@@ -8,19 +8,22 @@ import MainPanel from './component/layout/MainPanel';
 import Footer from './component/layout/Footer';
 import MenuPanel from './component/layout/MenuPanel';
 import InfoPanel from './component/layout/InfoPanel';
+import { Box } from '@mui/material';
 
 function App() {
   return (
-    <main className="wrapper">
-      {/* LEFT */}
-      <div className="left">
+    <Box display="flex" height="100vh">
+      <Box display="flex" flexDirection="column" flex={1}>
         <Header />
         <InfoPanel />
-        <MainPanel />
+        <Box flex={1}>
+          <MainPanel />
+        </Box>
         <Footer />
-      </div>
+      </Box>
+
       <MenuPanel />
-    </main>
+    </Box>
   );
 }
 

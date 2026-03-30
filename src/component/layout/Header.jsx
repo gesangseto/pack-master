@@ -1,16 +1,12 @@
 import { Circle } from '@mui/icons-material';
-import BrowserUpdatedIcon from '@mui/icons-material/BrowserUpdated';
-import FeedIcon from '@mui/icons-material/Feed';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import {
   Box,
   Button,
-  Divider,
   Grid,
   keyframes,
   Paper,
-  TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -20,19 +16,6 @@ import '../../css/layout/Header.css';
 import { useAuthStore } from '../../store/authStore';
 import { useConfirm } from '../ConfirmProvider';
 import FormLogin from '../FormLogin';
-
-const smallField = {
-  '& .MuiInputBase-input': {
-    padding: '4px 8px',
-    fontSize: '13px',
-  },
-};
-const smallText = {
-  width: 150,
-  fontSize: 14,
-  textAlign: 'right',
-  minWidth: 175,
-};
 
 const blink = keyframes`
   0% { background-color: #ff8383; }
