@@ -11,9 +11,13 @@ import {
 } from '@mui/material';
 import { login } from '../service/Authentication';
 import { useAlert } from './AlertProvider';
-import { useAuthStore } from '../store/authStore';
+import {
+  useAuthStore,
+  useAuthStorePanelA,
+  useAuthStorePanelB,
+} from '../store/authStore';
 
-export default function FormLogin({ open, onClose, onLogin }) {
+export default function FormLogin({ open, onClose, onLogin, saveTo }) {
   const { showAlert } = useAlert();
   const [error, setError] = useState('');
   const [form, setForm] = useState({
@@ -22,6 +26,8 @@ export default function FormLogin({ open, onClose, onLogin }) {
   });
 
   const loginStore = useAuthStore((state) => state.login);
+  const loginStoreA = useAuthStorePanelA((state) => state.login);
+  const loginStoreB = useAuthStorePanelB((state) => state.login);
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -34,12 +40,16 @@ export default function FormLogin({ open, onClose, onLogin }) {
       setError('Username dan Password wajib diisi');
       return;
     }
-
     setError('');
     let submit = await login(form);
     if (submit && !submit.error) {
       onLogin(submit);
-      loginStore(submit.data[0]); // simpan user global
+      if (saveTo) {
+        if (saveTo == 'panel-a') loginStoreA(submit.data[0]);
+        if (saveTo == 'panel-b') loginStoreB(submit.data[0]);
+      } else {
+        loginStore(submit.data[0]);
+      }
       setForm({ username: '', password: '' });
     }
     showAlert(submit.message, submit.error ? 'error' : 'success');

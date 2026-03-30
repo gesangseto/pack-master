@@ -1,6 +1,7 @@
-import { Circle } from '@mui/icons-material';
+import { BorderColor, Circle } from '@mui/icons-material';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import {
   Box,
   Button,
@@ -38,11 +39,7 @@ const sxButtonLogout = {
   borderRadius: 3,
   display: 'flex',
   flexDirection: 'column',
-  backgroundColor: '#a30505',
-  color: 'white',
-  '&:hover': {
-    backgroundColor: lighten('#a30505', 0.5),
-  },
+  border: 0.5,
 };
 function Header() {
   const [open, setOpen] = useState(false);
@@ -145,19 +142,21 @@ function Header() {
               >
                 {user ? (
                   <Button
+                    variant="contained"
+                    color="inherit"
                     sx={sxButtonLogout}
                     onClick={async () => {
                       const ok = await confirm('Yakin ingin logout?');
                       if (ok) logout();
                     }}
                   >
-                    <LogoutIcon fontSize="large" />
-                    Logout
+                    <ManageAccountsIcon fontSize="medium" />
+                    <Typography variant="caption">{user.username}</Typography>
                   </Button>
                 ) : (
                   <Button sx={sxButtonLogin} onClick={() => setOpen(true)}>
-                    <LoginIcon fontSize="large" />
-                    Login
+                    <LoginIcon fontSize="medium" />
+                    <Typography variant="caption">Login</Typography>
                   </Button>
                 )}
               </Box>

@@ -19,27 +19,32 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import EditSquareIcon from '@mui/icons-material/EditSquare';
 import { invoke } from '@tauri-apps/api/core';
 import { SerialPort } from 'tauri-plugin-serialplugin-api';
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: (theme.vars ?? theme).palette.text.secondary,
-  ...theme.applyStyles('dark', {
-    backgroundColor: '#1A2027',
-  }),
-}));
+import { useAuthStorePanelA } from '../store/authStore';
+import { useAuthStorePanelB } from '../store/authStore';
+import FormLogin from './FormLogin';
 
 export default function Panel(props) {
-  const { title, scannerPort } = props;
+  const { title, scannerPort, panelType = 'a' } = props;
+  const panelUser =
+    panelType == 'a'
+      ? useAuthStorePanelA((state) => state.user)
+      : useAuthStorePanelB((state) => state.user);
+  const [openLoginForm, setOpenLoginForm] = useState(false);
   const [listBarcode, setListBarcode] = useState([]);
+  const [addMode, setAddMode] = useState(true);
+  const addModeRef = useRef(addMode);
   const isConnected = useRef(false);
+
+  useEffect(() => {
+    addModeRef.current = addMode;
+  }, [addMode]);
 
   useEffect(() => {
     if (isConnected.current) return;
     isConnected.current = true;
     connectScanner();
   }, []);
+
   const connectScanner = async () => {
     try {
       const port = new SerialPort({
@@ -59,32 +64,50 @@ export default function Panel(props) {
       });
       await port.startListening();
       await port.listen((event) => {
-        setListBarcode((prev) => [...prev, event]);
-        console.log(`Data Barcode PORT ${scannerPort}: `, event);
+        processBarcode(event);
       });
     } catch (err) {
       console.error('Koneksi gagal:', err);
     }
   };
 
+  const processBarcode = (event) => {
+    console.log(addModeRef.current);
+
+    if (addModeRef.current) {
+      setListBarcode((prev) => [...prev, event]);
+    } else {
+      setListBarcode(
+        (prev) => prev.filter((item) => item !== event), // 🔥 hapus yang sama
+      );
+    }
+    console.log(`Data Barcode PORT ${scannerPort}: `, event);
+  };
+
   return (
     <Paper sx={{ p: 0 }} minHeight="100vh">
       {/* TOP PANEL */}
-      <Box display="flex" gap={1}>
+      <Box display="flex" gap={0.1}>
         {/* TOP LEFT PANEL */}
         <Box
           flex={1}
+          maxHeight={45}
           display="flex"
           alignItems="center"
           justifyContent="space-between"
           bgcolor="#0d1fa6"
           color="white"
           px={3}
-          borderRadius={3}
+          borderRadius={2}
         >
-          <Box textAlign="center">
+          {' '}
+          <Box sx={{ textAlign: 'center', maxHeight: 45 }}>
             <Typography variant="caption">LEVEL</Typography>
-            <Typography variant="h6" fontWeight="bold">
+            <Typography
+              variant="h6"
+              fontWeight={'bold'}
+              sx={{ pb: 1, lineHeight: 0.5 }}
+            >
               2
             </Typography>
           </Box>
@@ -97,33 +120,55 @@ export default function Panel(props) {
         </Box>
         {/* TOP RIGHT PANEL */}
         <Box
+          maxHeight={45}
           flex={1}
           display="flex"
-          alignItems="center"
-          justifyContent="space-between"
           bgcolor="#8a8a8a"
           color="white"
           px={3}
-          borderRadius={3}
+          borderRadius={2}
         >
           {/* LOGIN BUTTON */}
-          <Button
-            variant="contained"
-            color="success"
-            sx={{ borderRadius: 2, px: 3 }}
-            disabled
-          >
-            Login
-          </Button>
+          {panelUser ? (
+            <Box
+              flex={1}
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Button
+                variant="contained"
+                color="info"
+                sx={{ borderRadius: 2, px: 3 }}
+              >
+                Info
+              </Button>
+              <Typography variant="h5">{panelUser.full_name}</Typography>
+              <Box sx={{ textAlign: 'center', maxHeight: 45 }}>
+                <Typography variant="caption">Auto Logout in:</Typography>
+                <Typography
+                  variant="h6"
+                  fontWeight="bold"
+                  sx={{ pb: 1, lineHeight: 0.5 }}
+                >
+                  12000
+                </Typography>
+              </Box>
+            </Box>
+          ) : (
+            <Box display="flex" alignItems="center">
+              <Button
+                onClick={() => setOpenLoginForm(true)}
+                variant="contained"
+                color="info"
+                sx={{ borderRadius: 2, px: 3 }}
+              >
+                Login
+              </Button>
+            </Box>
+          )}
 
-          <Typography variant="h5">Operator 1</Typography>
           {/* LEVEL */}
-          <Box textAlign="center">
-            <Typography variant="caption">Auto Logout id:</Typography>
-            <Typography variant="h6" fontWeight="bold">
-              12000
-            </Typography>
-          </Box>
         </Box>
       </Box>
 
@@ -162,10 +207,22 @@ export default function Panel(props) {
                 </Grid>
                 <Grid size={2}>
                   <Stack spacing={1} alignItems="center">
-                    <Button>
+                    <Button
+                      variant="contained"
+                      color={addMode ? 'success' : 'inherit'}
+                      onClick={() => {
+                        setAddMode(true);
+                      }}
+                    >
                       <AddIcon fontSize="small" />
                     </Button>
-                    <Button>
+                    <Button
+                      variant="contained"
+                      color={addMode ? 'inherit' : 'error'}
+                      onClick={() => {
+                        setAddMode(false);
+                      }}
+                    >
                       <RemoveIcon fontSize="small" />
                     </Button>
                   </Stack>
@@ -250,8 +307,8 @@ export default function Panel(props) {
               <Box sx={{ mt: 1, p: 1, borderRadius: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Typography variant="h6">Rentang Bobot (kg)</Typography>
-                  <Button sx={{ ml: 1 }}>
-                    <EditSquareIcon sx={{ color: '#1df124' }} />
+                  <Button variant="contained" color="warning" sx={{ ml: 1 }}>
+                    <EditSquareIcon />
                   </Button>
                 </Box>
                 <Box display="flex" gap={1} alignItems="center" mt={1}>
@@ -284,6 +341,13 @@ export default function Panel(props) {
           </Grid>
         </Grid>
       </Box>
+
+      <FormLogin
+        open={openLoginForm}
+        onClose={() => setOpenLoginForm(false)}
+        onLogin={() => setOpenLoginForm(false)}
+        saveTo={`panel-${panelType}`}
+      />
     </Paper>
   );
 }
