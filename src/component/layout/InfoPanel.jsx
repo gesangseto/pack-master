@@ -8,10 +8,11 @@ import {
   Divider,
   Button,
   Tooltip,
+  lighten,
 } from '@mui/material';
 import FeedIcon from '@mui/icons-material/Feed';
 import BrowserUpdatedIcon from '@mui/icons-material/BrowserUpdated';
-
+import color from '../../constant/color.json';
 const smallField = {
   '& .MuiInputBase-input': {
     padding: '4px 8px',
@@ -25,6 +26,17 @@ const smallText = {
   minWidth: 175,
 };
 
+const sxButton = {
+  borderRadius: 5,
+  maxWidth: 100,
+  minHeight: 100,
+  flexDirection: 'column',
+  backgroundColor: color.primary,
+  color: 'white',
+  '&:hover': {
+    backgroundColor: lighten(color.primary, 0.5),
+  },
+};
 export default function InfoPanel() {
   return (
     <Paper sx={{ my: 0.5, borderRadius: 2 }}>
@@ -72,16 +84,15 @@ export default function InfoPanel() {
             <Divider orientation="vertical" flexItem />
             {/* UPDATE ACTION */}
             <Box display="flex" gap={5} alignItems="center" mx={10}>
-              <Tooltip title="Production Details">
-                <Button>
-                  <FeedIcon sx={{ fontSize: 75 }} />
-                </Button>
-              </Tooltip>
-              <Tooltip title="Update Data">
-                <Button>
-                  <BrowserUpdatedIcon sx={{ fontSize: 75 }} />
-                </Button>
-              </Tooltip>
+              <Button sx={sxButton}>
+                <FeedIcon sx={{ fontSize: 45 }} />
+                <Typography variant="body2">Production Details</Typography>
+              </Button>
+
+              <Button sx={sxButton}>
+                <BrowserUpdatedIcon sx={{ fontSize: 45 }} />
+                <Typography variant="body2">Update Data</Typography>
+              </Button>
             </Box>
           </Box>
         </Grid>

@@ -6,6 +6,7 @@ import {
   Button,
   Grid,
   keyframes,
+  lighten,
   Paper,
   Tooltip,
   Typography,
@@ -22,6 +23,27 @@ const blink = keyframes`
   50% { background-color: #a30505; }
   100% { background-color: #ff8383; }
 `;
+
+const sxButtonLogin = {
+  borderRadius: 3,
+  display: 'flex',
+  flexDirection: 'column',
+  backgroundColor: '#378a00',
+  color: 'white',
+  '&:hover': {
+    backgroundColor: lighten('#378a00', 0.5),
+  },
+};
+const sxButtonLogout = {
+  borderRadius: 3,
+  display: 'flex',
+  flexDirection: 'column',
+  backgroundColor: '#a30505',
+  color: 'white',
+  '&:hover': {
+    backgroundColor: lighten('#a30505', 0.5),
+  },
+};
 function Header() {
   const [open, setOpen] = useState(false);
   const confirm = useConfirm();
@@ -122,28 +144,21 @@ function Header() {
                 justifyContent="flex-end"
               >
                 {user ? (
-                  <Tooltip title="Logout">
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={async () => {
-                        const ok = await confirm('Yakin ingin logout?');
-                        if (ok) logout();
-                      }}
-                    >
-                      <LogoutIcon fontSize="large" />
-                    </Button>
-                  </Tooltip>
+                  <Button
+                    sx={sxButtonLogout}
+                    onClick={async () => {
+                      const ok = await confirm('Yakin ingin logout?');
+                      if (ok) logout();
+                    }}
+                  >
+                    <LogoutIcon fontSize="large" />
+                    Logout
+                  </Button>
                 ) : (
-                  <Tooltip title="Login">
-                    <Button
-                      variant="contained"
-                      color="success"
-                      onClick={() => setOpen(true)}
-                    >
-                      <LoginIcon fontSize="large" />
-                    </Button>
-                  </Tooltip>
+                  <Button sx={sxButtonLogin} onClick={() => setOpen(true)}>
+                    <LoginIcon fontSize="large" />
+                    Login
+                  </Button>
                 )}
               </Box>
             </Box>

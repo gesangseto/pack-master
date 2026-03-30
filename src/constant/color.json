@@ -1,0 +1,10 @@
+{
+  "primary": "#0d1fa6",
+  "secondary": "#8a8a8a",
+  "success": "#4dc000",
+  "warning": "#b5c900",
+  "danger": "#ed6e13",
+  "textLight": "#ffffff",
+  "textDark": "#000000",
+  "blue": "#0300cc"
+}
