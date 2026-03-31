@@ -17,7 +17,7 @@
         "height": 600,
         "resizable": true,
         "maximized": true,
-        "decorations": false,
+        "decorations": true,
         "skipTaskbar": false
       }
     ],

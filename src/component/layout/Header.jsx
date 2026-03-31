@@ -1,4 +1,4 @@
-import { BorderColor, Circle } from '@mui/icons-material';
+import { Circle } from '@mui/icons-material';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
@@ -18,6 +18,7 @@ import '../../css/layout/Header.css';
 import { useAuthStore } from '../../store/authStore';
 import { useConfirm } from '../ConfirmProvider';
 import FormLogin from '../FormLogin';
+import UserInfo from '../UserInfo';
 
 const blink = keyframes`
   0% { background-color: #ff8383; }
@@ -42,7 +43,8 @@ const sxButtonLogout = {
   border: 0.5,
 };
 function Header() {
-  const [open, setOpen] = useState(false);
+  const [openLogin, setOpenLogin] = useState(false);
+  const [openUserInfo, setOpenUserInfo] = useState(false);
   const confirm = useConfirm();
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
@@ -145,16 +147,13 @@ function Header() {
                     variant="contained"
                     color="inherit"
                     sx={sxButtonLogout}
-                    onClick={async () => {
-                      const ok = await confirm('Yakin ingin logout?');
-                      if (ok) logout();
-                    }}
+                    onClick={() => setOpenUserInfo(true)}
                   >
                     <ManageAccountsIcon fontSize="medium" />
                     <Typography variant="caption">{user.username}</Typography>
                   </Button>
                 ) : (
-                  <Button sx={sxButtonLogin} onClick={() => setOpen(true)}>
+                  <Button sx={sxButtonLogin} onClick={() => setOpenLogin(true)}>
                     <LoginIcon fontSize="medium" />
                     <Typography variant="caption">Login</Typography>
                   </Button>
@@ -165,9 +164,16 @@ function Header() {
         </Grid>
       </Grid>
       <FormLogin
-        open={open}
-        onClose={() => setOpen(false)}
-        onLogin={() => setOpen(false)}
+        open={openLogin}
+        onClose={() => setOpenLogin(false)}
+        onLogin={() => setOpenLogin(false)}
+        panel="main"
+      />
+      <UserInfo
+        open={openUserInfo}
+        onClose={() => setOpenUserInfo(false)}
+        onLogin={() => setOpenUserInfo(false)}
+        panel="main"
       />
     </Paper>
   );

@@ -1,35 +1,61 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { styled } from '@mui/material/styles';
+import AddIcon from '@mui/icons-material/Add';
+import AllInboxOutlinedIcon from '@mui/icons-material/AllInboxOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import EditSquareIcon from '@mui/icons-material/EditSquare';
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
+import PrintOutlinedIcon from '@mui/icons-material/PrintOutlined';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import RemoveIcon from '@mui/icons-material/Remove';
+import ToggleOnOutlinedIcon from '@mui/icons-material/ToggleOnOutlined';
+import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
+import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
+import WidgetsOutlinedIcon from '@mui/icons-material/WidgetsOutlined';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 import {
   Box,
-  Stack,
-  Grid,
-  Typography,
-  Paper,
   Button,
-  TextField,
+  Grid,
   List,
   ListItem,
   ListItemText,
+  Menu,
+  MenuItem,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
 } from '@mui/material';
-import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
-import EditSquareIcon from '@mui/icons-material/EditSquare';
+import { lighten } from '@mui/material/styles';
 import { invoke } from '@tauri-apps/api/core';
+import { useEffect, useRef, useState } from 'react';
 import { SerialPort } from 'tauri-plugin-serialplugin-api';
-import { useAuthStorePanelA } from '../store/authStore';
-import { useAuthStorePanelB } from '../store/authStore';
+import color from '../constant/color.json';
+import { useAuthStorePanelA, useAuthStorePanelB } from '../store/authStore';
 import FormLogin from './FormLogin';
+import UserInfo from './UserInfo';
 
+const sxButton = {
+  borderRadius: 5,
+  minWidth: 75,
+  minHeight: 75,
+  flexDirection: 'column',
+  backgroundColor: color.blueLight,
+  color: 'black',
+  '&:hover': {
+    backgroundColor: lighten(color.blueLight, 0.5),
+  },
+};
 export default function Panel(props) {
-  const { title, scannerPort, panelType = 'a' } = props;
+  const { title, scannerPort, panel = 'a' } = props;
   const panelUser =
-    panelType == 'a'
+    panel == 'a'
       ? useAuthStorePanelA((state) => state.user)
       : useAuthStorePanelB((state) => state.user);
+  const [anchorEl, setAnchorEl] = useState(null);
   const [openLoginForm, setOpenLoginForm] = useState(false);
+  const [openUserInfo, setOpenUserInfo] = useState(false);
   const [listBarcode, setListBarcode] = useState([]);
   const [addMode, setAddMode] = useState(true);
   const addModeRef = useRef(addMode);
@@ -70,10 +96,13 @@ export default function Panel(props) {
       console.error('Koneksi gagal:', err);
     }
   };
-
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget); // set posisi menu
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const processBarcode = (event) => {
-    console.log(addModeRef.current);
-
     if (addModeRef.current) {
       setListBarcode((prev) => [...prev, event]);
     } else {
@@ -125,7 +154,8 @@ export default function Panel(props) {
           display="flex"
           bgcolor="#8a8a8a"
           color="white"
-          px={3}
+          pr={3}
+          pl={0.3}
           borderRadius={2}
         >
           {/* LOGIN BUTTON */}
@@ -139,9 +169,10 @@ export default function Panel(props) {
               <Button
                 variant="contained"
                 color="info"
+                onClick={() => setOpenUserInfo(true)}
                 sx={{ borderRadius: 2, px: 3 }}
               >
-                Info
+                <ManageAccountsIcon fontSize="medium" />
               </Button>
               <Typography variant="h5">{panelUser.full_name}</Typography>
               <Box sx={{ textAlign: 'center', maxHeight: 45 }}>
@@ -186,15 +217,70 @@ export default function Panel(props) {
                     justifyContent: 'center',
                   }}
                 >
-                  <Button>
-                    <CenterFocusStrongIcon fontSize="large" />
+                  {/* MENU Yang punya banyak pilihan */}
+                  <Button
+                    onClick={handleClick}
+                    sx={{
+                      ...sxButton,
+                      backgroundColor: panelUser
+                        ? color.blueLight
+                        : color.inherit,
+                    }}
+                    disabled={panelUser ? false : true}
+                  >
+                    <WidgetsOutlinedIcon
+                      sx={{ fontSize: 45, color: 'white' }}
+                    />
                   </Button>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                  >
+                    <MenuItem onClick={handleClose}>
+                      <ReceiptLongIcon />
+                      &nbsp; Show EPC Info
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                      <DriveFileRenameOutlineIcon />
+                      &nbsp; Manual Entry
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                      <AllInboxOutlinedIcon />
+                      &nbsp; Re-Aggregation
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                      <UnarchiveOutlinedIcon />
+                      &nbsp; Break Aggregation
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                      <PrintOutlinedIcon />
+                      &nbsp; Re-Print Label
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                      <ToggleOnOutlinedIcon />
+                      &nbsp; Comm / Decomm
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                      <DeleteOutlineIcon />
+                      &nbsp; Destroy
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                      <VaccinesOutlinedIcon />
+                      &nbsp; Product Sampling
+                    </MenuItem>
+                    <MenuItem onClick={handleClose}>
+                      <LocalOfferOutlinedIcon />
+                      &nbsp; Label Sampling
+                    </MenuItem>
+                  </Menu>
                 </Grid>
+                {/* Message Board Information */}
                 <Grid
                   size={8}
                   sx={{
                     borderRadius: 2,
-                    bgcolor: 'red',
+                    bgcolor: `${panelUser ? 'red' : color.inherit}`,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -205,9 +291,11 @@ export default function Panel(props) {
                     Silakan login {title}
                   </Typography>
                 </Grid>
+                {/* ADD MODE */}
                 <Grid size={2}>
                   <Stack spacing={1} alignItems="center">
                     <Button
+                      disabled={!panelUser}
                       variant="contained"
                       color={addMode ? 'success' : 'inherit'}
                       onClick={() => {
@@ -217,6 +305,7 @@ export default function Panel(props) {
                       <AddIcon fontSize="small" />
                     </Button>
                     <Button
+                      disabled={!panelUser}
                       variant="contained"
                       color={addMode ? 'inherit' : 'error'}
                       onClick={() => {
@@ -241,6 +330,7 @@ export default function Panel(props) {
               >
                 <Typography variant="h6">DAFTAR EPC ISI (Dus)</Typography>
               </Box>
+              {/* Daftar EPC ISI */}
               <Box
                 height={280}
                 border="1px solid #ccc"
@@ -256,12 +346,18 @@ export default function Panel(props) {
                   ))}
                 </List>
               </Box>
+              {/* Tombol Dibawah Daftar EPC ISI */}
               <Box display="flex" justifyContent="space-between" mt={2}>
-                <Button variant="contained" color="error">
+                <Button
+                  disabled={panelUser ? false : true}
+                  variant="contained"
+                  color="error"
+                >
                   Close Partial
                 </Button>
-
-                <Button variant="contained">Print Label</Button>
+                <Button variant="contained" disabled={panelUser ? false : true}>
+                  Print Label
+                </Button>
               </Box>
             </Box>
           </Grid>
@@ -307,7 +403,12 @@ export default function Panel(props) {
               <Box sx={{ mt: 1, p: 1, borderRadius: 2 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Typography variant="h6">Rentang Bobot (kg)</Typography>
-                  <Button variant="contained" color="warning" sx={{ ml: 1 }}>
+                  <Button
+                    variant="contained"
+                    color="warning"
+                    sx={{ ml: 1 }}
+                    disabled={panelUser ? false : true}
+                  >
                     <EditSquareIcon />
                   </Button>
                 </Box>
@@ -318,7 +419,12 @@ export default function Panel(props) {
                 </Box>
               </Box>
               {/* Timbang */}
-              <Button fullWidth variant="contained" sx={{ my: 2 }}>
+              <Button
+                fullWidth
+                variant="contained"
+                sx={{ my: 2 }}
+                disabled={panelUser ? false : true}
+              >
                 Timbang
               </Button>
 
@@ -346,7 +452,14 @@ export default function Panel(props) {
         open={openLoginForm}
         onClose={() => setOpenLoginForm(false)}
         onLogin={() => setOpenLoginForm(false)}
-        saveTo={`panel-${panelType}`}
+        panel={panel}
+      />
+
+      <UserInfo
+        open={openUserInfo}
+        onClose={() => setOpenUserInfo(false)}
+        onLogin={() => setOpenUserInfo(false)}
+        panel={panel}
       />
     </Paper>
   );

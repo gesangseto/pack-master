@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Typography } from '@mui/material';
+import { Box, Button, Grid, Paper, Typography } from '@mui/material';
 import { useState } from 'react';
 import { lighten } from '@mui/material/styles';
 
@@ -72,13 +72,13 @@ const GridRowspan = (props) => {
       justifyContent={pacakaging_level % 2 == 0 ? 'flex-start' : 'flex-end'}
       sx={{ display: 'flex', width: '100%' }}
     >
-      <Paper sx={sxBoxLeft}>
+      <Button sx={sxBoxLeft}>
         <Typography variant="h4">L{pacakaging_level}</Typography>
         <Typography variant="h4" fontWeight={'bold'}>
           MB
         </Typography>
         <Typography variant="h6">Master Box</Typography>
-      </Paper>
+      </Button>
       {/* {BAGIAN DATA} */}
       {pacakaging_level == 1 ? (
         <Box sx={sxBoxRight}>

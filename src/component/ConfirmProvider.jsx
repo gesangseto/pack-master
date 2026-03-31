@@ -1,61 +1,62 @@
-import React, { createContext, useContext, useState } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Typography,
-} from '@mui/material';
+import { Button, Typography } from '@mui/material';
+import { createContext, useContext, useState } from 'react';
+import BaseDialog from './atom/BaseDialog';
 
 const ConfirmContext = createContext();
+export const useConfirm = () => useContext(ConfirmContext);
 
-export const ConfirmProvider = ({ children }) => {
-  const [confirmState, setConfirmState] = useState({
-    open: false,
+export function ConfirmProvider({ children }) {
+  const [open, setOpen] = useState(false);
+  const [options, setOptions] = useState({
+    title: '',
     message: '',
-    resolve: null,
+    severity: 'info',
   });
+  const [resolver, setResolver] = useState(null);
 
-  const confirm = (message) => {
+  const confirm = ({
+    title = 'Konfirmasi',
+    message = '',
+    severity = 'info',
+  }) => {
+    setOptions({ title, message, severity });
+    setOpen(true);
+
     return new Promise((resolve) => {
-      setConfirmState({
-        open: true,
-        message,
-        resolve,
-      });
+      setResolver(() => resolve);
     });
   };
 
   const handleClose = (result) => {
-    confirmState.resolve(result);
-    setConfirmState({ open: false, message: '', resolve: null });
+    setOpen(false);
+    if (resolver) resolver(result);
   };
 
   return (
-    <ConfirmContext.Provider value={confirm}>
+    <ConfirmContext.Provider value={{ confirm }}>
       {children}
-
-      <Dialog open={confirmState.open} onClose={() => handleClose(false)}>
-        <DialogTitle>Konfirmasi</DialogTitle>
-
-        <DialogContent>
-          <Typography>{confirmState.message}</Typography>
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={() => handleClose(false)}>Batal</Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => handleClose(true)}
-          >
-            Ya
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <BaseDialog
+        open={open}
+        onClose={() => handleClose(false)}
+        title={options.title}
+        severity={options.severity}
+        actions={
+          <>
+            <Button onClick={() => handleClose(false)}>Batal</Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => handleClose(true)}
+            >
+              OK
+            </Button>
+          </>
+        }
+      >
+        <Typography variant="h5" textAlign={'center'}>
+          {options.message}
+        </Typography>
+      </BaseDialog>
     </ConfirmContext.Provider>
   );
-};
-
-export const useConfirm = () => useContext(ConfirmContext);
+}
