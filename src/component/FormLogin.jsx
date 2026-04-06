@@ -1,14 +1,4 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Paper,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Paper, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import { login } from '../service/Authentication';
 import {

@@ -10,8 +10,12 @@ export async function syncMain() {
     await model.sync();
   }
 }
-export async function syncBatch() {
+export async function syncBatch(batchNo) {
+  if (!batchNo) {
+    throw new Error('batchNo wajib diisi');
+  }
   for (const model of batchModels) {
-    await model.sync();
+    const BatchModel = model.useBatch(batchNo); // 🔥 inject batch
+    await BatchModel.sync();
   }
 }

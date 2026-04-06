@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { stationAuthStore } from '../store/authStore';
 
 const $axios = axios.create();
 $axios.defaults.timeout = 120000;
@@ -7,9 +8,9 @@ $axios.interceptors.request.use(
     config.baseURL = 'http://127.0.0.1:3002/';
     config.headers = {
       'Content-Type': 'application/json',
-      'user-Type': 'Station',
+      'User-Type': 'station',
       lang: 'id',
-      //   'mertrackapi-token': 'c71d88f3-e144-49c9-91df-d9a6bd0e3414',
+      'mertrackapi-token': stationAuthStore.getState().token,
     };
     return config;
   },

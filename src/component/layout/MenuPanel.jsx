@@ -11,19 +11,27 @@ import HistoryIcon from '@mui/icons-material/History';
 import AppsIcon from '@mui/icons-material/Apps';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { useConfirm } from '../ConfirmProvider';
+import { getPO } from '../../service/Production';
+import FormOpenBatch from '../FormOpenBatch';
+import { useBatchStore } from '../../store/batchStore';
 
 export default function MenuPanel() {
+  const process_order = useBatchStore((state) => state.process_order);
+  const removePo = useBatchStore((state) => state.removePo);
+
   const confirm = useConfirm();
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
-  const defaultColor = '#aaaaaa';
+  const defaultColor = '#226aa5';
+  const [modalOpenBatch, setModalOpenBatch] = useState(false);
+
   const sxButton = (props = {}) => {
     const { disabled } = props;
     return {
       borderRadius: 3,
       display: 'flex',
       flexDirection: 'column',
-      backgroundColor: disabled ? lighten(defaultColor, 1) : defaultColor,
+      backgroundColor: disabled ? lighten(color, 1) : defaultColor,
       border: disabled ? null : 2,
       color: 'white',
       '&:hover': {
@@ -78,12 +86,20 @@ export default function MenuPanel() {
 
       {/* BUTTON GROUP */}
       <Stack spacing={1}>
-        <Button disabled sx={sxButton({ disabled: true })}>
+        <Button
+          disabled={process_order ? true : false}
+          onClick={() => setModalOpenBatch(true)}
+          sx={sxButton()}
+        >
           <PlayArrowIcon />
           Start Production
         </Button>
 
-        <Button sx={sxButton()}>
+        <Button
+          disabled={process_order ? false : true}
+          sx={sxButton()}
+          onClick={() => removePo()}
+        >
           <StopIcon />
           Stop Production
         </Button>
@@ -127,6 +143,12 @@ export default function MenuPanel() {
           Shutdown
         </Button>
       </Stack>
+      <FormOpenBatch
+        open={modalOpenBatch}
+        onClose={() => setModalOpenBatch(false)}
+        onSubmit={() => setModalOpenBatch(false)}
+        panel="main"
+      />
     </Box>
   );
 }

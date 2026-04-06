@@ -1,20 +1,21 @@
 import { create } from 'zustand';
 
+export const stationAuthStore = create((set) => ({
+  token: 'AG-5A0DC3AA-3385-6C4B-A7AE-2D07C880C436',
+  setToken: (token) => set({ token }),
+}));
+
 export const useAuthStore = create((set) => ({
   user: null,
-
   login: (userData) => {
     set({ user: userData });
-
     // simpan ke localStorage
     localStorage.setItem('user', JSON.stringify(userData));
   },
-
   logout: () => {
     set({ user: null });
     localStorage.removeItem('user');
   },
-
   // init dari localStorage (biar tidak hilang saat refresh)
   init: () => {
     const stored = localStorage.getItem('user');

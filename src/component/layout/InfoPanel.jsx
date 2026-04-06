@@ -1,18 +1,18 @@
-import React from 'react';
+import BrowserUpdatedIcon from '@mui/icons-material/BrowserUpdated';
+import FeedIcon from '@mui/icons-material/Feed';
 import {
   Box,
-  Grid,
-  Typography,
-  TextField,
-  Paper,
-  Divider,
   Button,
-  Tooltip,
+  Divider,
+  Grid,
+  Paper,
+  TextField,
+  Typography,
   lighten,
 } from '@mui/material';
-import FeedIcon from '@mui/icons-material/Feed';
-import BrowserUpdatedIcon from '@mui/icons-material/BrowserUpdated';
 import color from '../../constant/color.json';
+import { useBatchStore } from '../../store/batchStore';
+
 const smallField = {
   '& .MuiInputBase-input': {
     padding: '4px 8px',
@@ -38,6 +38,7 @@ const sxButton = {
   },
 };
 export default function InfoPanel() {
+  const process_order = useBatchStore((state) => state.process_order);
   return (
     <Paper sx={{ my: 0.5, borderRadius: 2 }}>
       <Grid container spacing={2} alignItems="center">
@@ -47,38 +48,70 @@ export default function InfoPanel() {
             <Box flex={1}>
               <Box display="flex" alignItems="center" gap={2} m={0.5}>
                 <Typography sx={smallText}>Process Order ID</Typography>
-                <TextField sx={smallField} value="102" fullWidth />
+                <TextField
+                  sx={smallField}
+                  value={process_order?.id ?? ''}
+                  fullWidth
+                />
               </Box>
               <Box display="flex" alignItems="center" gap={2} m={0.5}>
                 <Typography sx={smallText}>ERP Work Order No</Typography>
-                <TextField sx={smallField} value="XXVII-2023" fullWidth />
+                <TextField
+                  sx={smallField}
+                  value={process_order?.process_order_erp ?? ''}
+                  fullWidth
+                />
               </Box>
               <Box display="flex" alignItems="center" gap={2} m={0.5}>
                 <Typography sx={smallText}>Product Name</Typography>
-                <TextField sx={smallField} value="Merindo Mivir" fullWidth />
+                <TextField
+                  sx={smallField}
+                  value={process_order?.product_name ?? ''}
+                  fullWidth
+                />
               </Box>
               <Box display="flex" alignItems="center" gap={2} m={0.5}>
                 <Typography sx={smallText}>Price (HET)</Typography>
-                <TextField sx={smallField} value="RP 123.456,-" fullWidth />
+                <TextField
+                  sx={smallField}
+                  value={process_order?.het ?? ''}
+                  fullWidth
+                />
               </Box>
             </Box>
             {/* RIGHT FORM */}
             <Box flex={1}>
               <Box display="flex" alignItems="center" gap={2} m={0.5}>
                 <Typography sx={smallText}>Batch No</Typography>
-                <TextField sx={smallField} value="TXAMO001" fullWidth />
+                <TextField
+                  sx={smallField}
+                  value={process_order?.batch_no ?? ''}
+                  fullWidth
+                />
               </Box>
               <Box display="flex" alignItems="center" gap={2} m={0.5}>
                 <Typography sx={smallText}>Lot No</Typography>
-                <TextField sx={smallField} value="TXAMO001" fullWidth />
+                <TextField
+                  sx={smallField}
+                  value={process_order?.lot_no ?? ''}
+                  fullWidth
+                />
               </Box>
               <Box display="flex" alignItems="center" gap={2} m={0.5}>
                 <Typography sx={smallText}>Mfg Date</Typography>
-                <TextField sx={smallField} value="03-Mar2024" fullWidth />
+                <TextField
+                  sx={smallField}
+                  value={process_order?.mfg_date ?? ''}
+                  fullWidth
+                />
               </Box>
               <Box display="flex" alignItems="center" gap={2} m={0.5}>
                 <Typography sx={smallText}>Exp Date</Typography>
-                <TextField sx={smallField} value="03-Mar2027" fullWidth />
+                <TextField
+                  sx={smallField}
+                  value={process_order?.exp_date ?? ''}
+                  fullWidth
+                />
               </Box>
             </Box>
             <Divider orientation="vertical" flexItem />
