@@ -90,7 +90,7 @@ const GridRowspan = (props) => {
             <Typography sx={sxTitle}>TERAGGREGASI</Typography>
             <Typography sx={sxField}>150</Typography>
           </Box>
-          <Box display="flex" gap={0.2}>
+          <Box display="flex" gap={0.2} minHeight={50}>
             <Typography sx={{ ...sxTitle, backgroundColor: getColor() }}>
               BELUM TERAGGREGASI
             </Typography>
@@ -109,7 +109,7 @@ const GridRowspan = (props) => {
             <Typography sx={sxTitle}>PARTIAL</Typography>
             <Typography sx={sxField}>1</Typography>
           </Box>
-          <Box display="flex" gap={0.2}>
+          <Box display="flex" gap={0.2} minHeight={50}>
             <Typography sx={{ ...sxTitle, backgroundColor: getColor() }}>
               TOTAL
             </Typography>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import reactLogo from './assets/react.svg';
-import ProductStockSerial from './models/ProductStockSerial';
 
 import './css/layout/MainScreen.css';
 import Header from './component/layout/Header';

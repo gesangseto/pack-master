@@ -1,0 +1,45 @@
+import BaseModel from '../BaseModel';
+
+class ProductStockSerial extends BaseModel {
+  static table = 'product_stock_serial';
+  static schema = {
+    id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
+    batch_id: 'TEXT',
+    batch_no: 'TEXT',
+    book_trx_id: 'TEXT',
+    company_prefix: 'TEXT',
+    customer_id: 'TEXT',
+    epc: 'TEXT',
+    epc_parent: 'TEXT',
+    epc_type: 'TEXT',
+    gtin: 'TEXT',
+    epc_key: 'TEXT',
+    max_qty: 'TEXT',
+    packaging_level: 'TEXT',
+    parent: 'TEXT',
+    process_id: 'TEXT',
+    product_id: 'TEXT',
+    pid_id: 'TEXT',
+    flag_full: 'TEXT',
+    quantity: 'TEXT',
+    quantity_child: 'TEXT',
+    serial: 'TEXT',
+    status: 'TEXT',
+    type: 'TEXT',
+    type_book_trx_id: 'TEXT',
+    warehouse_id: 'TEXT',
+    id: 'TEXT',
+    print_count: 'TEXT',
+    barcode: 'TEXT',
+    weight_min: 'TEXT',
+    weight: 'TEXT',
+    weight_max: 'TEXT',
+    weight_remark: 'TEXT',
+    created_date: 'TEXT',
+    remark: 'TEXT',
+    user_id: 'TEXT',
+    user_name: 'TEXT',
+    no_urut: 'TEXT',
+  };
+}
+export default ProductStockSerial;

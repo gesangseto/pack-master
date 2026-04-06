@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
 import { SerialPort } from 'tauri-plugin-serialplugin-api';
-import ProductStockSerial from '../../models/ProductStockSerial';
+// import ProductStockSerial from '../../models/ProductStockSerial';
 import Panel from '../Panel';
 import { Grid, Paper } from '@mui/material';
 
@@ -27,25 +27,25 @@ function MainPanel() {
 
   const handleSubmit = async () => {
     if (!barcode) return;
-    await ProductStockSerial.create({
-      barcode: barcode,
-    });
+    // await ProductStockSerial.create({
+    //   barcode: barcode,
+    // });
     setBarcode('');
   };
 
   const handleDelete = async (id) => {
     console.log('delete:', id);
 
-    await ProductStockSerial.delete({
-      where: {
-        id: id,
-      },
-    });
+    // await ProductStockSerial.delete({
+    //   where: {
+    //     id: id,
+    //   },
+    // });
     loadDataBarcode();
   };
 
   const loadDataBarcode = async () => {
-    setAllBarcode(await ProductStockSerial.findAll());
+    // setAllBarcode(await ProductStockSerial.findAll());
   };
 
   const connectScanner = async () => {
