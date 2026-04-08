@@ -14,8 +14,10 @@ import { useConfirm } from '../ConfirmProvider';
 import { getPO } from '../../service/Production';
 import FormOpenBatch from '../FormOpenBatch';
 import { useBatchStore } from '../../store/batchStore';
+import { useNavigate } from 'react-router-dom';
 
 export default function MenuPanel() {
+  const navigate = useNavigate();
   const process_order = useBatchStore((state) => state.process_order);
   const removePo = useBatchStore((state) => state.removePo);
 
@@ -118,7 +120,7 @@ export default function MenuPanel() {
           Audit Trail
         </Button>
 
-        <Button sx={sxButton()}>
+        <Button sx={sxButton()} onClick={() => navigate('/setting')}>
           <SettingsIcon />
           Settings
         </Button>

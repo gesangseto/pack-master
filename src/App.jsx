@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainScreen from './MainScreen';
+import SettingScreen from './SettingScreen';
 import database from './configuration/database';
 import './App.css';
 import { syncMain, syncBatch } from './models';
@@ -25,7 +27,14 @@ function App() {
 
   if (!ready) return <div>Loading...</div>;
 
-  return <MainScreen user={user} />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainScreen user={user} />} />
+        <Route path="/setting" element={<SettingScreen />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

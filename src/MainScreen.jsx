@@ -20,7 +20,6 @@ function App() {
         </Box>
         <Footer />
       </Box>
-
       <MenuPanel />
     </Box>
   );
