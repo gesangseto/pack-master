@@ -1,6 +1,5 @@
 import { Circle } from '@mui/icons-material';
 import LoginIcon from '@mui/icons-material/Login';
-import LogoutIcon from '@mui/icons-material/LogoutOutlined';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import {
   Box,
@@ -9,14 +8,12 @@ import {
   keyframes,
   lighten,
   Paper,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
 import mertrackLogo from '../../assets/mertrack.png';
 import '../../css/layout/Header.css';
 import { useAuthStore } from '../../store/authStore';
-import { useConfirm } from '../ConfirmProvider';
 import FormLogin from '../FormLogin';
 import UserInfo from '../UserInfo';
 
@@ -45,7 +42,6 @@ const sxButtonLogout = {
 function Header() {
   const [openLogin, setOpenLogin] = useState(false);
   const [openUserInfo, setOpenUserInfo] = useState(false);
-  const confirm = useConfirm();
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
 
@@ -176,67 +172,6 @@ function Header() {
         panel="main"
       />
     </Paper>
-  );
-  return (
-    <div className="header">
-      <div className="header-item-left">
-        <a target="_blank"></a>
-      </div>
-
-      <div className="header-item"></div>
-      <div className="header-item"></div>
-      <div className="header-item">
-        <Box
-          sx={{
-            height: 65,
-            // Properti untuk mengetengahkan teks:
-            display: 'flex',
-            alignItems: 'center',
-            color: 'black', // Agar teks kontras dengan background merah
-            fontWeight: 'bold',
-            fontSize: '1.2rem',
-          }}
-        >
-          {user ? (
-            <span>
-              {user?.username}
-              <br />
-              {user?.department_name} - {user?.section_name}
-            </span>
-          ) : null}
-        </Box>
-      </div>
-      <div className="header-item-right">
-        {user ? (
-          <Tooltip title="Logout">
-            <Button
-              variant="contained"
-              color="error"
-              onClick={async () => {
-                const ok = await confirm('Yakin ingin logout?');
-                console.log(ok);
-
-                if (ok) {
-                  logout();
-                }
-              }}
-            >
-              <LogoutIcon fontSize="large" />
-            </Button>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Login">
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() => setOpen(true)}
-            >
-              <LoginIcon fontSize="large" />
-            </Button>
-          </Tooltip>
-        )}
-      </div>
-    </div>
   );
 }
 

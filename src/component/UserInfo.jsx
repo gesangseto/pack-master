@@ -31,7 +31,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 export default function UserInfo({ open, onClose, panel }) {
   const [tabActive, setTabActive] = useState(0);
-  const { confirm } = useConfirm();
+  const { confirm: showConfirm } = useConfirm();
   const userInfo =
     panel == 'a'
       ? useAuthStorePanelA((state) => state.user)
@@ -133,7 +133,7 @@ export default function UserInfo({ open, onClose, panel }) {
               color="error"
               startIcon={<LogoutIcon />}
               onClick={async () => {
-                const ok = await confirm({
+                const ok = await showConfirm({
                   title: 'User Logout Confirmation',
                   message: 'Anda akan logout. Lanjutkan?',
                   severity: 'warning',

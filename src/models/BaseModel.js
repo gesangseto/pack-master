@@ -19,6 +19,8 @@ export default class BaseModel {
   // =============================
 
   static async db() {
+    console.log(this.dbType); // main
+
     if (this.dbType === 'main') {
       return await database.getMain();
     }
@@ -126,13 +128,12 @@ export default class BaseModel {
   static async findOne(where = {}) {
     this.validateTable();
     this.validateWhere(where);
+    const db = await this.db(); // 🔥 WAJIB
 
     const keys = Object.keys(where);
     const values = Object.values(where);
-
     const conditions = keys.map((k) => `${k} = ?`).join(' AND ');
-
-    const result = await this.db().select(
+    const result = await db.select(
       `SELECT * FROM ${this.table} WHERE ${conditions} LIMIT 1`,
       values,
     );

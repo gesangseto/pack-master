@@ -5,7 +5,10 @@ import SettingScreen from './SettingScreen';
 import database from './configuration/database';
 import './App.css';
 import { syncMain, syncBatch } from './models';
+import appConfig, { initConfig } from './models/mertrack/AppConfig';
+import { useConfig } from './store/configStore';
 function App() {
+  const setConfig = useConfig((state) => state.setData);
   const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
 
@@ -15,7 +18,12 @@ function App() {
         // 🔌 INIT MAIN DB
         await database.initMain();
         await syncMain();
-        console.log('✅ App Ready');
+        let getData = await appConfig.findOne({ id: 1 });
+        if (!getData) {
+          await appConfig.create(initConfig());
+          getData = await appConfig.findOne({ id: 1 });
+        }
+        setConfig(getData);
         setReady(true);
       } catch (err) {
         console.error('❌ Init error:', err);

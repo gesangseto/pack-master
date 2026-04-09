@@ -11,6 +11,7 @@ fn shutdown() {
 
 fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_serialplugin::init())
         .plugin(tauri_plugin_sql::Builder::default().build())
         .invoke_handler(tauri::generate_handler![shutdown]) // 🔥 register di sini

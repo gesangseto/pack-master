@@ -11,17 +11,15 @@ import HistoryIcon from '@mui/icons-material/History';
 import AppsIcon from '@mui/icons-material/Apps';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { useConfirm } from '../ConfirmProvider';
-import { getPO } from '../../service/Production';
 import FormOpenBatch from '../FormOpenBatch';
 import { useBatchStore } from '../../store/batchStore';
 import { useNavigate } from 'react-router-dom';
-
 export default function MenuPanel() {
   const navigate = useNavigate();
   const process_order = useBatchStore((state) => state.process_order);
   const removePo = useBatchStore((state) => state.removePo);
 
-  const confirm = useConfirm();
+  const { confirm: showConfirm } = useConfirm();
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const defaultColor = '#226aa5';
@@ -137,7 +135,11 @@ export default function MenuPanel() {
         <Button
           sx={sxButton()}
           onClick={async () => {
-            const ok = await confirm('Anda yakin ingin Shutdown PC?');
+            const ok = await showConfirm({
+              title: 'Shotdown',
+              message: 'Anda yakin ingin Shutdown PC?',
+              severity: 'warning',
+            });
             if (ok) await invoke('shutdown');
           }}
         >

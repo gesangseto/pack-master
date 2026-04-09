@@ -1,9 +1,10 @@
 import ProductStockBatch from './batch/ProductStockBatch';
 import ProductStockSerial from './batch/ProductStockSerial';
+import appConfig from './mertrack/AppConfig';
 import MstUser from './mertrack/MstUser';
 
 const batchModels = [ProductStockBatch, ProductStockSerial];
-const mainModels = [MstUser];
+const mainModels = [appConfig, MstUser];
 
 export async function syncMain() {
   for (const model of mainModels) {
