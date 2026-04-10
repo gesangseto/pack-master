@@ -28,6 +28,7 @@ $axios.interceptors.response.use(
     return Promise.resolve(response);
   },
   function (error) {
+    console.log(error);
     showGlobalAlert(`${error.message}`, 'error');
     return Promise.reject(error);
   },

@@ -2,7 +2,7 @@ import Database from '@tauri-apps/plugin-sql';
 
 const connections = {};
 
-const DB_MAIN = 'mertrack';
+const DB_MAIN = 'packmaster';
 
 const database = {
   // =============================
@@ -13,7 +13,7 @@ const database = {
       connections[DB_MAIN] = await Database.load(
         `sqlite:${DB_MAIN.toLowerCase()}.db`,
       );
-      console.log('✅ Main DB (mertrack) ready');
+      console.log('✅ Main DB (packmaster) ready');
     }
     return connections[DB_MAIN];
   },

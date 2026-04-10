@@ -1,5 +1,5 @@
 import { op } from '../models/BaseModel';
-import appConfig from '../models/mertrack/AppConfig';
+import appConfig, { initConfig } from '../models/mertrack/AppConfig';
 import MstMenu from '../models/mertrack/MstMenu';
 import MstSectionRole from '../models/mertrack/MstSectionRole';
 import MstUser from '../models/mertrack/MstUser';

@@ -22,7 +22,7 @@ export default function () {
     });
   };
   const handleSave = async () => {
-    await appConfig.update(form, { id: form.id });
+    await appConfig.update(form, { where: { id: form.id } });
     setConfig(form);
     showAlert('Saved successfully', 'success');
   };
