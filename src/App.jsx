@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './App.css';
 import MainScreen from './MainScreen';
 import SettingScreen from './SettingScreen';
 import database from './configuration/database';
-import './App.css';
-import { syncMain, syncBatch } from './models';
-import appConfig, { initConfig } from './models/mertrack/AppConfig';
+import { syncStructureMain } from './models';
 import { useConfig } from './store/configStore';
+import {
+  syncAppConfig,
+  syncMstMenu,
+  syncMstSectionRole,
+  syncMstUser,
+} from './sync/mertrackDb';
+
 function App() {
   const setConfig = useConfig((state) => state.setData);
   const [user, setUser] = useState(null);
@@ -17,13 +23,14 @@ function App() {
       try {
         // 🔌 INIT MAIN DB
         await database.initMain();
-        await syncMain();
-        let getData = await appConfig.findOne({ id: 1 });
-        if (!getData) {
-          await appConfig.create(initConfig());
-          getData = await appConfig.findOne({ id: 1 });
-        }
-        setConfig(getData);
+        await syncStructureMain();
+        // Syncron base data Pack Master
+        setConfig(await syncAppConfig());
+        // Syncron data dengan server L3
+        await syncMstUser();
+        await syncMstMenu();
+        await syncMstSectionRole();
+
         setReady(true);
       } catch (err) {
         console.error('❌ Init error:', err);

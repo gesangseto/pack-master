@@ -1,5 +1,5 @@
 import $axios from '../configuration/axios';
-let url = '/api/v3/authentication/login';
+let url = '/v3/authentication/login';
 
 export const login = async (Params = Object) => {
   let body = { ...Params, type: 'website' };

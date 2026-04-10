@@ -3,7 +3,7 @@ import $axios from '../configuration/axios';
 export const getVersion = async () => {
   return new Promise((resolve) => {
     $axios
-      .get(`/api/version`)
+      .get(`/version`)
       .then((result) => {
         let _data = result.data;
         return resolve(_data);
@@ -17,7 +17,7 @@ export const getVersion = async () => {
 export const getDocs = async () => {
   return new Promise((resolve) => {
     $axios
-      .get(`/api/docs`)
+      .get(`/docs`)
       .then((result) => {
         let _data = result.data;
         return resolve(_data);

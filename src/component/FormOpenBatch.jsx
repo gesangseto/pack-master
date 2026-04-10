@@ -10,7 +10,7 @@ import { useAlert } from './AlertProvider';
 import BaseDialog from './atom/BaseDialog';
 import { getPO } from '../service/Production';
 import { useBatchStore } from '../store/batchStore';
-import { syncBatch } from '../models';
+import { syncStructureBatch } from '../models';
 
 export default function FormOpenBatch({ open, onClose, onSubmit, panel }) {
   const processOrder = useBatchStore((state) => state.setPo);
@@ -51,7 +51,7 @@ export default function FormOpenBatch({ open, onClose, onSubmit, panel }) {
       setForm({ id: '', batch_no: '', process_order_erp: '' });
       showAlert(resp.message, 'success');
       // Lakuakn SYNC Karena pasti ini database baru
-      await syncBatch(`${data.process_order_erp}`);
+      await syncStructureBatch(`${data.process_order_erp}`);
     } else {
       let msg = '';
       if (form.id) msg = `ID [${form.id}] `;

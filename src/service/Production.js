@@ -1,5 +1,5 @@
 import $axios from '../configuration/axios';
-let url = '/api/v4.1/production/process-order';
+let url = '/v4.1/production/process-order';
 
 export const getPO = async (param = Object) => {
   var query_string = '';

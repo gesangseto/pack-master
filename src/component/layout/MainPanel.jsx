@@ -34,8 +34,6 @@ function MainPanel() {
   };
 
   const handleDelete = async (id) => {
-    console.log('delete:', id);
-
     // await ProductStockSerial.delete({
     //   where: {
     //     id: id,
@@ -65,7 +63,6 @@ function MainPanel() {
       await port.startListening();
       await port.listen((event) => {
         setBarcode(event);
-        console.log('Data Barcode:', event);
       });
     } catch (err) {
       console.error('Koneksi gagal:', err);

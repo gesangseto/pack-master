@@ -25,7 +25,6 @@ export const AlertProvider = ({ children }) => {
     severity: 'info',
   });
   const showAlert = (message, severity = 'info') => {
-    console.log('SHOW ALERT:', message);
     setAlert({
       open: true,
       message: `${message}`, // pastikan string

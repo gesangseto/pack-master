@@ -1,6 +1,7 @@
 import { Box, Button, Paper, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import { login } from '../service/Authentication';
+import appConfig from '../models/mertrack/AppConfig';
+import MstUser from '../models/mertrack/MstUser';
 import {
   useAuthStore,
   useAuthStorePanelA,
@@ -8,7 +9,6 @@ import {
 } from '../store/authStore';
 import { useAlert } from './AlertProvider';
 import BaseDialog from './atom/BaseDialog';
-import appConfig from '../models/mertrack/AppConfig';
 
 export default function FormLogin({ open, onClose, onLogin, panel }) {
   const { showAlert } = useAlert();
@@ -37,17 +37,26 @@ export default function FormLogin({ open, onClose, onLogin, panel }) {
     let auth;
     // Login SA
     let super_admin = await appConfig.findOne({
-      username: form.username,
-      password: form.password,
+      where: {
+        username: form.username,
+        password: form.password,
+      },
     });
     if (super_admin) {
       auth = { ...super_admin, full_name: 'Super Admin' };
     } else {
       // Login User Biasa
-      let submit = await login(form);
-      if (submit) {
-        if (!submit.error) auth = { ...submit.data[0] };
-        else return showAlert(submit.message, 'error');
+      let get_user = await MstUser.findOne({
+        where: {
+          username: form.username,
+          pwd: form.password,
+          status: 'Active',
+        },
+      });
+      if (get_user) {
+        auth = { ...get_user };
+      } else {
+        return showAlert(`Username atau password salah`, 'error');
       }
     }
     if (auth) {

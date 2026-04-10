@@ -6,14 +6,12 @@ $axios.defaults.timeout = 120000;
 $axios.interceptors.request.use(
   async (config) => {
     let appConfig = useConfig.getState().config;
-    console.log(appConfig);
-
-    config.baseURL = `http://${appConfig?.ip_server}:${appConfig?.port_server}/`;
+    config.baseURL = `http://${appConfig?.ip_server}:${appConfig?.port_server}/api/`;
     config.headers = {
       'Content-Type': 'application/json',
       'User-Type': 'station',
       lang: 'id',
-      // 'mertrackapi-token': stationAuthStore.getState().token,
+      'mertrackapi-token': appConfig?.code,
     };
     return config;
   },
@@ -31,9 +29,6 @@ $axios.interceptors.response.use(
   },
   function (error) {
     showGlobalAlert(`${error.message}`, 'error');
-    console.log('AWWW', `${error.message}`);
-    console.log('===================');
-
     return Promise.reject(error);
   },
 );
