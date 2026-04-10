@@ -14,6 +14,7 @@ import { useState } from 'react';
 import mertrackLogo from '../../assets/mertrack.png';
 import '../../css/layout/Header.css';
 import { useAuthStore } from '../../store/authStore';
+import { useDevice } from '../../store/configStore';
 import FormLogin from '../FormLogin';
 import UserInfo from '../UserInfo';
 
@@ -40,6 +41,7 @@ const sxButtonLogout = {
   border: 0.5,
 };
 function Header() {
+  const devices = useDevice((state) => state.devices);
   const [openLogin, setOpenLogin] = useState(false);
   const [openUserInfo, setOpenUserInfo] = useState(false);
   const user = useAuthStore((state) => state.user);
@@ -100,17 +102,29 @@ function Header() {
                 <span
                   style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  <Circle fontSize="small" color="success" /> Scanner 1
+                  <Circle
+                    fontSize="small"
+                    color={devices.scanner1.status ? 'success' : 'error'}
+                  />
+                  Scanner 1
                 </span>
                 <span
                   style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  <Circle fontSize="small" color="error" /> Scanner 1
+                  <Circle
+                    fontSize="small"
+                    color={devices.scanner2.status ? 'success' : 'error'}
+                  />
+                  Scanner 1
                 </span>
                 <span
                   style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  <Circle fontSize="small" color="error" /> Weigher
+                  <Circle
+                    fontSize="small"
+                    color={devices.weigher.status ? 'success' : 'error'}
+                  />
+                  Weigher
                 </span>
               </Box>
             </Box>

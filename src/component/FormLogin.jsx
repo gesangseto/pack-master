@@ -8,6 +8,7 @@ import {
 } from '../store/authStore';
 import { useAlert } from './AlertProvider';
 import BaseDialog from './atom/BaseDialog';
+import appConfig from '../models/mertrack/AppConfig';
 
 export default function FormLogin({ open, onClose, onLogin, panel }) {
   const { showAlert } = useAlert();
@@ -33,15 +34,30 @@ export default function FormLogin({ open, onClose, onLogin, panel }) {
       return;
     }
     setError('');
-    let submit = await login(form);
-    if (submit && !submit.error) {
-      onLogin(submit);
-      if (panel == 'a') loginStoreA(submit.data[0]);
-      else if (panel == 'b') loginStoreB(submit.data[0]);
-      else loginStore(submit.data[0]);
-      setForm({ username: '', password: '' });
+    let auth;
+    // Login SA
+    let super_admin = await appConfig.findOne({
+      username: form.username,
+      password: form.password,
+    });
+    if (super_admin) {
+      auth = { ...super_admin, full_name: 'Super Admin' };
+    } else {
+      // Login User Biasa
+      let submit = await login(form);
+      if (submit) {
+        if (!submit.error) auth = { ...submit.data[0] };
+        else return showAlert(submit.message, 'error');
+      }
     }
-    showAlert(submit.message, submit.error ? 'error' : 'success');
+    if (auth) {
+      if (panel == 'a') loginStoreA(auth);
+      else if (panel == 'b') loginStoreB(auth);
+      else loginStore(auth);
+      setForm({ username: '', password: '' });
+      onLogin(auth);
+      return showAlert(`Selamat datang ${auth.full_name}`, 'success');
+    }
   };
 
   return (

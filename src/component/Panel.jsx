@@ -4,6 +4,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import EditSquareIcon from '@mui/icons-material/EditSquare';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PrintOutlinedIcon from '@mui/icons-material/PrintOutlined';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -11,7 +12,6 @@ import ToggleOnOutlinedIcon from '@mui/icons-material/ToggleOnOutlined';
 import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
 import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
 import WidgetsOutlinedIcon from '@mui/icons-material/WidgetsOutlined';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 import {
   Box,
@@ -33,6 +33,8 @@ import { useEffect, useRef, useState } from 'react';
 import { SerialPort } from 'tauri-plugin-serialplugin-api';
 import color from '../constant/color.json';
 import { useAuthStorePanelA, useAuthStorePanelB } from '../store/authStore';
+import { useConfig, useDevice } from '../store/configStore';
+import { useAlert } from './AlertProvider';
 import FormLogin from './FormLogin';
 import UserInfo from './UserInfo';
 
@@ -48,69 +50,121 @@ const sxButton = {
   },
 };
 export default function Panel(props) {
-  const { title, scannerPort, panel = 'a' } = props;
+  const { title, panel = 'a' } = props;
+  const { showAlert } = useAlert();
+  const connectDevice = useDevice((state) => state.connectDevice);
+  const disconnectDevice = useDevice((state) => state.disconnectDevice);
+  const config = useConfig((state) => state.config);
   const panelUser =
     panel == 'a'
       ? useAuthStorePanelA((state) => state.user)
       : useAuthStorePanelB((state) => state.user);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [openLoginForm, setOpenLoginForm] = useState(false);
   const [openUserInfo, setOpenUserInfo] = useState(false);
   const [listBarcode, setListBarcode] = useState([]);
   const [addMode, setAddMode] = useState(true);
   const addModeRef = useRef(addMode);
-  const isConnected = useRef(false);
+  const portRef = useRef(null);
 
   useEffect(() => {
     addModeRef.current = addMode;
   }, [addMode]);
-
   useEffect(() => {
-    if (isConnected.current) return;
-    isConnected.current = true;
-    connectScanner();
-  }, []);
+    let scannerSetting;
+    if (panel == 'a') {
+      scannerSetting = {
+        name: config.scanner1_name,
+        model: config.scanner1_model,
+        comport: config.scanner1_comport,
+        baudrate: config.scanner1_baudrate,
+      };
+    } else {
+      scannerSetting = {
+        name: config.scanner2_name,
+        model: config.scanner2_model,
+        comport: config.scanner2_comport,
+        baudrate: config.scanner2_baudrate,
+      };
+    }
 
-  const connectScanner = async () => {
+    if (!scannerSetting.comport) return;
+
+    connectScanner(scannerSetting);
+    // 🔥 cleanup (ini kunci)
+    return () => {
+      if (portRef.current) {
+        portRef.current.close();
+        portRef.current = null;
+      }
+    };
+  }, [config]);
+
+  const connectScanner = async (scanSetting) => {
+    let deviceName;
+    if (panel === 'a') deviceName = 'scanner1';
+    else if (panel === 'b') deviceName = 'scanner2';
     try {
+      connectDevice(deviceName);
+      // 🔥 tutup koneksi lama dulu
+      if (portRef.current) {
+        await portRef.current.close();
+        portRef.current = null;
+      }
+
       const port = new SerialPort({
-        path: `COM${scannerPort}`,
-        baudRate: 9600,
+        path: scanSetting.comport,
+        baudRate: scanSetting.baudrate,
       });
+
       await port.open();
-      // Sesuaikan 'path' dengan COM port scanner Anda (misal: "COM3")
+
+      portRef.current = port; // simpan
+
       await invoke('plugin:serialplugin|write_data_terminal_ready', {
-        path: `COM${scannerPort}`,
-        level: true, // Ganti 'value' menjadi 'level'
-      });
-      // Zebra biasanya juga butuh RTS (Request To Send) agar stabil
-      await invoke('plugin:serialplugin|write_request_to_send', {
-        path: `COM${scannerPort}`,
+        path: scanSetting.comport,
         level: true,
       });
+
+      await invoke('plugin:serialplugin|write_request_to_send', {
+        path: scanSetting.comport,
+        level: true,
+      });
+
       await port.startListening();
-      await port.listen((event) => {
+
+      // 🔥 pastikan hanya 1 listener
+      port.listen((event) => {
         processBarcode(event);
       });
     } catch (err) {
-      console.error('Koneksi gagal:', err);
+      disconnectDevice(deviceName);
+      showAlert(`${scanSetting.name}: ${err}`, 'error');
     }
   };
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget); // set posisi menu
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const processBarcode = (event) => {
-    if (addModeRef.current) {
-      setListBarcode((prev) => [...prev, event]);
-    } else {
-      setListBarcode(
-        (prev) => prev.filter((item) => item !== event), // 🔥 hapus yang sama
-      );
-    }
-    console.log(`Data Barcode PORT ${scannerPort}: `, event);
+  const processBarcode = (barcodeRaw) => {
+    const barcode = barcodeRaw.trim();
+    if (!barcode) return;
+
+    setListBarcode((prev) => {
+      // 🔥 cek apakah sudah ada
+      if (prev.includes(barcode)) {
+        showAlert(`Barcode sudah ada di Panel ${panel}`, 'error');
+        return prev; // tidak ditambah
+      }
+
+      // 🔥 kalau belum ada → tambah
+      return [...prev, barcode];
+    });
   };
 
   return (
@@ -129,7 +183,6 @@ export default function Panel(props) {
           px={3}
           borderRadius={2}
         >
-          {' '}
           <Box sx={{ textAlign: 'center', maxHeight: 45 }}>
             <Typography variant="caption">LEVEL</Typography>
             <Typography

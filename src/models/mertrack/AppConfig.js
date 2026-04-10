@@ -15,6 +15,7 @@ class appConfig extends BaseModel {
 
     username: 'TEXT',
     password: 'TEXT',
+    is_superadmin: 'INTEGER',
 
     scanner1_name: 'TEXT',
     scanner1_model: 'TEXT',
@@ -52,6 +53,7 @@ export const initConfig = () => {
 
     username: 'super_admin',
     password: 'superadmin1234',
+    is_superadmin: 1,
 
     scanner1_name: 'SCN1',
     scanner1_model: 'Zebra-10029',

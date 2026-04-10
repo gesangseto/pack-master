@@ -14,8 +14,11 @@ import { useConfirm } from '../ConfirmProvider';
 import FormOpenBatch from '../FormOpenBatch';
 import { useBatchStore } from '../../store/batchStore';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/authStore';
+
 export default function MenuPanel() {
   const navigate = useNavigate();
+  const user = useAuthStore((state) => state.user);
   const process_order = useBatchStore((state) => state.process_order);
   const removePo = useBatchStore((state) => state.removePo);
 
@@ -87,7 +90,7 @@ export default function MenuPanel() {
       {/* BUTTON GROUP */}
       <Stack spacing={1}>
         <Button
-          disabled={process_order ? true : false}
+          disabled={user && !process_order ? false : true}
           onClick={() => setModalOpenBatch(true)}
           sx={sxButton()}
         >
@@ -96,7 +99,7 @@ export default function MenuPanel() {
         </Button>
 
         <Button
-          disabled={process_order ? false : true}
+          disabled={user && process_order ? false : true}
           sx={sxButton()}
           onClick={() => removePo()}
         >
@@ -108,17 +111,21 @@ export default function MenuPanel() {
       <Divider sx={{ bgcolor: '#555' }} />
 
       <Stack spacing={1}>
-        <Button sx={sxButton()}>
+        <Button sx={sxButton()} disabled={user ? false : true}>
           <ListAltIcon />
           Production Mgmt
         </Button>
 
-        <Button sx={sxButton()}>
+        <Button sx={sxButton()} disabled={user ? false : true}>
           <HistoryIcon />
           Audit Trail
         </Button>
 
-        <Button sx={sxButton()} onClick={() => navigate('/setting')}>
+        <Button
+          sx={sxButton()}
+          disabled={user?.is_superadmin ? false : true}
+          onClick={() => navigate('/setting')}
+        >
           <SettingsIcon />
           Settings
         </Button>
@@ -127,13 +134,13 @@ export default function MenuPanel() {
       <Divider sx={{ bgcolor: '#555' }} />
 
       <Stack spacing={1} mt="auto">
-        <Button sx={sxButton()}>
+        <Button sx={sxButton()} disabled={user ? false : true}>
           <AppsIcon />
           Switch App
         </Button>
 
         <Button
-          sx={sxButton()}
+          sx={{ ...sxButton(), backgroundColor: 'red' }}
           onClick={async () => {
             const ok = await showConfirm({
               title: 'Shotdown',

@@ -15,3 +15,49 @@ export const useConfig = create((set) => ({
     }
   },
 }));
+
+export const useDevice = create((set, get) => ({
+  // =============================
+  // 🔌 CONNECTION STATE
+  // =============================
+  devices: {
+    scanner1: { status: 0, status_desc: 'disconnected' },
+    scanner2: { status: 0, status_desc: 'disconnected' },
+    weigher: { status: 0, status_desc: 'disconnected' },
+    ups: { status: 0, status_desc: 'disconnected' },
+  },
+
+  // =============================
+  // 🔄 SET STATUS
+  // =============================
+  setDevice: (name, data) =>
+    set((state) => ({
+      devices: {
+        ...state.devices,
+        [name]: {
+          ...state.devices[name],
+          ...data,
+        },
+      },
+    })),
+
+  // =============================
+  // 🔌 CONNECT DEVICE
+  // =============================
+  connectDevice: async (name) => {
+    get().setDevice(name, {
+      status: 1,
+      status_desc: 'connected',
+    });
+  },
+
+  // =============================
+  // 🔌 DISCONNECT
+  // =============================
+  disconnectDevice: async (name) => {
+    get().setDevice(name, {
+      status: 0,
+      status_desc: 'disconnected',
+    });
+  },
+}));

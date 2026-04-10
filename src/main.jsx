@@ -6,11 +6,11 @@ import { ConfirmProvider } from './component/ConfirmProvider';
 import { AlertProvider } from './component/AlertProvider';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <ConfirmProvider>
-      <AlertProvider>
-        <App />
-      </AlertProvider>
-    </ConfirmProvider>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <ConfirmProvider>
+    <AlertProvider>
+      <App />
+    </AlertProvider>
+  </ConfirmProvider>,
+  // </React.StrictMode>,
 );

@@ -42,7 +42,7 @@ export default function () {
   return (
     <Paper sx={{ p: 3, width: '50%' }}>
       <Typography variant="h6" mb={2}>
-        L3 Setting
+        Server Setting
       </Typography>
 
       {/* IP Server */}

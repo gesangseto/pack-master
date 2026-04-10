@@ -1,16 +1,19 @@
 import axios from 'axios';
-import { stationAuthStore } from '../store/authStore';
-
+import { useConfig } from '../store/configStore';
+import { showGlobalAlert } from '../component/AlertProvider';
 const $axios = axios.create();
 $axios.defaults.timeout = 120000;
 $axios.interceptors.request.use(
   async (config) => {
-    config.baseURL = 'http://127.0.0.1:3002/';
+    let appConfig = useConfig.getState().config;
+    console.log(appConfig);
+
+    config.baseURL = `http://${appConfig?.ip_server}:${appConfig?.port_server}/`;
     config.headers = {
       'Content-Type': 'application/json',
       'User-Type': 'station',
       lang: 'id',
-      'mertrackapi-token': stationAuthStore.getState().token,
+      // 'mertrackapi-token': stationAuthStore.getState().token,
     };
     return config;
   },
@@ -27,7 +30,10 @@ $axios.interceptors.response.use(
     return Promise.resolve(response);
   },
   function (error) {
-    console.log(error);
+    showGlobalAlert(`${error.message}`, 'error');
+    console.log('AWWW', `${error.message}`);
+    console.log('===================');
+
     return Promise.reject(error);
   },
 );

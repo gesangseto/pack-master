@@ -4,6 +4,7 @@ import DnsOutlinedIcon from '@mui/icons-material/DnsOutlined';
 import ReplayOutlinedIcon from '@mui/icons-material/ReplayOutlined';
 import SettingsApplicationsOutlinedIcon from '@mui/icons-material/SettingsApplicationsOutlined';
 import SettingsInputHdmiOutlinedIcon from '@mui/icons-material/SettingsInputHdmiOutlined';
+import PlayForWorkIcon from '@mui/icons-material/PlayForWork';
 import { Box } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -18,6 +19,9 @@ import { useNavigate } from 'react-router-dom';
 
 import AppSetting from './component/setting/AppSetting';
 import ServerSetting from './component/setting/ServerSetting';
+import ScannerSetting from './component/setting/ScannerSetting';
+import WeigherSetting from './component/setting/WeigherSetting';
+
 function SettingScreen() {
   const navigate = useNavigate();
   const { confirm: showConfirm } = useConfirm();
@@ -49,13 +53,19 @@ function SettingScreen() {
               </ListItemIcon>
               <ListItemText>Server Setting</ListItemText>
             </MenuItem>
+            <Divider />
             <MenuItem onClick={() => setMenu(3)}>
               <ListItemIcon>
                 <SettingsInputHdmiOutlinedIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText>Device Setting</ListItemText>
+              <ListItemText>Scanner Setting</ListItemText>
             </MenuItem>
-            <Divider />
+            <MenuItem onClick={() => setMenu(4)}>
+              <ListItemIcon>
+                <PlayForWorkIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Weigher Setting</ListItemText>
+            </MenuItem>
           </MenuList>
         </Box>
 
@@ -116,7 +126,15 @@ function SettingScreen() {
           justifyContent: 'space-between', // 🔥 penting
         }}
       >
-        {menu === 1 ? <AppSetting /> : menu === 2 ? <ServerSetting /> : null}
+        {menu === 1 ? (
+          <AppSetting />
+        ) : menu === 2 ? (
+          <ServerSetting />
+        ) : menu === 3 ? (
+          <ScannerSetting />
+        ) : menu === 4 ? (
+          <WeigherSetting />
+        ) : null}
       </Paper>
     </Box>
   );

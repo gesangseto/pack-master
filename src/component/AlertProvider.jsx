@@ -1,7 +1,22 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Snackbar, Alert } from '@mui/material';
 
 const AlertContext = createContext();
+
+// ✅ GLOBAL
+let globalShowAlert = null;
+
+export const setGlobalAlert = (fn) => {
+  globalShowAlert = fn;
+};
+
+export const showGlobalAlert = (message, severity = 'info') => {
+  if (globalShowAlert) {
+    globalShowAlert(message, severity);
+  } else {
+    console.warn('Alert belum siap');
+  }
+};
 
 export const AlertProvider = ({ children }) => {
   const [alert, setAlert] = useState({
@@ -9,18 +24,24 @@ export const AlertProvider = ({ children }) => {
     message: '',
     severity: 'info',
   });
-
   const showAlert = (message, severity = 'info') => {
+    console.log('SHOW ALERT:', message);
     setAlert({
       open: true,
-      message,
+      message: `${message}`, // pastikan string
       severity,
+      key: new Date().getTime(), // 🔥 paksa update
     });
   };
 
   const handleClose = () => {
     setAlert({ ...alert, open: false });
   };
+
+  // 🔥 REGISTER GLOBAL
+  useEffect(() => {
+    setGlobalAlert(showAlert);
+  }, []);
 
   return (
     <AlertContext.Provider value={{ showAlert }}>
